@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { AbstractOptionalFind } from "../../../common/abstract/abstract-optional-find.interface";
-import { Prediction } from "../entities/prediction.entity";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractOptionalFind } from '../../../common/abstract/abstract-optional-find.interface';
+import { Prediction } from '../entities/prediction.entity';
 
 import {
   EntityManager,
@@ -9,27 +9,29 @@ import {
   FindOneOptions,
   FindOptionsWhere,
   Repository,
-} from "typeorm";
-import { AbstractFind } from "../../../common/abstract/abstract-find.interface";
-import { AbstractRepository } from "../../../common/abstract/abstract-repo-service";
+} from 'typeorm';
+import { AbstractFind } from '../../../common/abstract/abstract-find.interface';
+import { AbstractRepository } from '../../../common/abstract/abstract-repo-service';
 
 @Injectable()
-export class FindRepositoryService extends AbstractRepository<Prediction>
-  implements AbstractFind<Prediction>, AbstractOptionalFind<Prediction> {
+export class FindRepositoryService
+  extends AbstractRepository<Prediction>
+  implements AbstractFind<Prediction>, AbstractOptionalFind<Prediction>
+{
   constructor(
-    @InjectRepository(Prediction) repository: Repository<Prediction>
+    @InjectRepository(Prediction) repository: Repository<Prediction>,
   ) {
     super(repository);
   }
   findOne(
     options: FindOneOptions<Prediction>,
-    entityManager?: EntityManager | undefined
+    entityManager?: EntityManager | undefined,
   ): Promise<Prediction> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
   find(
     options: FindOneOptions<Prediction>,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ): Promise<Prediction[]> {
     const manager = this.selectEntityManager(entityManager);
 
@@ -40,7 +42,7 @@ export class FindRepositoryService extends AbstractRepository<Prediction>
 
   findOneByOrNull(
     where: FindOptionsWhere<Prediction>,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ): Promise<Prediction | null> {
     return this.findOneOrNull({ where }, entityManager);
   }
@@ -51,21 +53,21 @@ export class FindRepositoryService extends AbstractRepository<Prediction>
 
   findOneByIdOrFail(
     id: string,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ): Promise<Prediction> {
     return this.findOneByFail({ id }, entityManager);
   }
 
   findOneByIdOrNull(
     id: string,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ): Promise<Prediction> {
     return this.findOneByFail({ id }, entityManager);
   }
 
   async findAll(
     options?: FindManyOptions<Prediction>,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ) {
     const manager = this.selectEntityManager(entityManager);
 
@@ -74,7 +76,7 @@ export class FindRepositoryService extends AbstractRepository<Prediction>
 
   async findOneFail(
     options: FindOneOptions<Prediction>,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ): Promise<Prediction> {
     const manager = this.selectEntityManager(entityManager);
 
@@ -89,21 +91,21 @@ export class FindRepositoryService extends AbstractRepository<Prediction>
 
   findOneByFail(
     where: FindOptionsWhere<Prediction>,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ): Promise<Prediction> {
     return this.findOneFail({ where }, entityManager);
   }
 
   findOneBy(
     where: FindOptionsWhere<Prediction>,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ): Promise<Prediction> {
     return this.findOne({ where }, entityManager);
   }
 
   async findOneOrNull(
     options: FindOneOptions<Prediction>,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ): Promise<Prediction | null> {
     const manager = this.selectEntityManager(entityManager);
 
@@ -112,7 +114,7 @@ export class FindRepositoryService extends AbstractRepository<Prediction>
 
   async findBy(
     where: FindOptionsWhere<Prediction>,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ): Promise<Prediction[]> {
     const manager = this.selectEntityManager(entityManager);
 
@@ -121,7 +123,7 @@ export class FindRepositoryService extends AbstractRepository<Prediction>
 
   async findByFail(
     where: FindOptionsWhere<Prediction>,
-    entityManager?: EntityManager
+    entityManager?: EntityManager,
   ): Promise<Prediction[]> {
     const manager = this.selectEntityManager(entityManager);
 

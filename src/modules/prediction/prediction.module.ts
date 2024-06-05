@@ -1,13 +1,13 @@
-import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { PredictionService } from "./prediction.service";
-import { PredictionController } from "./prediction.controller";
-import { Prediction } from "./entities/prediction.entity";
-import { UserModule } from "../user/user.module";
-import { DomainService } from "./domain/domain.service";
-import { CreateRepositoryService } from "./repository/create-repository.service";
-import { FindRepositoryService } from "./repository/find-repository.service";
-import { MailService } from "../mail/mail.service";
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PredictionService } from './prediction.service';
+import { PredictionController } from './prediction.controller';
+import { Prediction } from './entities/prediction.entity';
+import { UserModule } from '../user/user.module';
+import { DomainService } from './domain/domain.service';
+import { CreateRepositoryService } from './repository/create-repository.service';
+import { FindRepositoryService } from './repository/find-repository.service';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Prediction]), UserModule],

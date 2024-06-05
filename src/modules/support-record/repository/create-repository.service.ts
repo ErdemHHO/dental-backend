@@ -1,5 +1,4 @@
 import { AbstractRepository } from 'src/common/abstract/abstract-repo-service';
-import { Prediction } from '../entities/prediction.entity';
 import { AbstractCreate } from 'src/common/abstract/abstract-create.interface';
 import {
   BadRequestException,
@@ -8,30 +7,31 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
-import { CreatePredictionDto } from '../dto/create-prediction.dto';
 import { UserService } from 'src/modules/user/user.service';
 import { MailService } from 'src/modules/mail/mail.service';
+import { SupportRecord } from '../entities/support-record.entity';
+import { CreateSupportDto } from '../dto/create-support.dto';
 
 @Injectable()
 export class CreateRepositoryService
-  extends AbstractRepository<Prediction>
-  implements AbstractCreate<Prediction>
+  extends AbstractRepository<SupportRecord>
+  implements AbstractCreate<SupportRecord>
 {
   constructor(
-    @InjectRepository(Prediction) repository: Repository<Prediction>,
+    @InjectRepository(SupportRecord) repository: Repository<SupportRecord>,
     private readonly userService: UserService,
     private readonly mailService: MailService,
   ) {
     super(repository);
   }
-  createMany(): Promise<Prediction[]> {
+  createMany(): Promise<SupportRecord[]> {
     throw new Error('Method not implemented.');
   }
 
   async create(
-    data: CreatePredictionDto,
+    data: CreateSupportDto,
     entityManager?: EntityManager,
-  ): Promise<Prediction> {
+  ): Promise<SupportRecord> {
     const manager = this.selectEntityManager(entityManager);
 
     const user = await this.userService.findOne(data.userId);
@@ -39,19 +39,12 @@ export class CreateRepositoryService
       throw new InternalServerErrorException('User not found');
     }
 
-    const entity = new Prediction();
+    const entity = new SupportRecord();
     entity.user = user;
-    entity.caries = data.predictionResult.caries;
-    entity.gingivitis = data.predictionResult.gingivitis;
-    entity.ulcer = data.predictionResult.ulcer;
-    entity.filePath = data.filePath;
+    entity.message = data.message;
 
     try {
-      const result = await manager.save(Prediction, entity);
-      // await this.mailService.sendPredictionResultEmail(
-      //   entity.user.email,
-      //   entity
-      // );
+      const result = await manager.save(SupportRecord, entity);
 
       return result;
     } catch (error) {

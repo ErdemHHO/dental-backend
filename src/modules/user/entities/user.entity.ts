@@ -1,3 +1,4 @@
+import { SupportRecord } from 'src/modules/support-record/entities/support-record.entity';
 import { Prediction } from '../../prediction/entities/prediction.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
@@ -24,6 +25,9 @@ export class User {
 
   @OneToMany(() => Prediction, (prediction) => prediction.user)
   predictions: Prediction[];
+
+  @OneToMany(() => SupportRecord, (supportRecord) => supportRecord.user)
+  supportRecords: SupportRecord[];
 
   constructor(
     email: string,
