@@ -1,12 +1,13 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import axios from 'axios';
-import * as FormData from 'form-data';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Prediction } from './entities/prediction.entity';
-import { UserService } from '../user/user.service';
-import { CreatePredictionDto } from './dto/create-prediction.dto';
-import { DomainService } from './domain/domain.service';
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import axios from "axios";
+import * as FormData from "form-data";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Prediction } from "./entities/prediction.entity";
+import { UserService } from "../user/user.service";
+import { CreatePredictionDto } from "./dto/create-prediction.dto";
+import { DomainService } from "./domain/domain.service";
+import { MailService } from "../mail/mail.service";
 
 @Injectable()
 export class PredictionService {
@@ -16,24 +17,25 @@ export class PredictionService {
     private predictionRepository: Repository<Prediction>,
     private readonly userService: UserService,
     private readonly domainService: DomainService,
+    private readonly mailService: MailService
   ) {}
 
   async predict(image: Buffer): Promise<any> {
     try {
       const formData = new FormData();
-      formData.append('file', image, 'image.jpg');
+      formData.append("file", image, "image.jpg");
       const response = await axios.post(
-        this.pythonServiceUrl || 'http://localhost:8000/predict/',
+        this.pythonServiceUrl || "http://localhost:8000/predict/",
         formData,
         {
           headers: formData.getHeaders(),
-        },
+        }
       );
 
       return response.data;
     } catch (error) {
       throw new InternalServerErrorException(
-        `Prediction failed: ${error.response?.data || error.message}`,
+        `Prediction failed: ${error.response?.data || error.message}`
       );
     }
   }
@@ -43,9 +45,17 @@ export class PredictionService {
   }
 
   async getPredictionsByUserId(userId: string): Promise<Prediction[]> {
-    return this.predictionRepository.find({
+    return this.domainService.findRepositoryService.find({
       where: { user: { id: userId } },
-      relations: ['user'],
+      relations: ["user"],
+    });
+  }
+
+  async getLastPredictionsByUserId(userId: string): Promise<Prediction> {
+    return this.domainService.findRepositoryService.findOneOrNull({
+      where: { user: { id: userId } },
+      relations: ["user"],
+      order: { createdAt: "DESC" },
     });
   }
 }

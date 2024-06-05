@@ -1,12 +1,14 @@
-import { TestingModule, Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { UserService } from './user.service';
-import { DomainService } from './domain/domain.service';
-import { FindRepositoryService } from './repository/find-repository.service';
-import { CreateRepositoryService } from './repository/create-repository.service';
-import { UpdateRepositoryService } from './repository/update-repository.service';
-import { DeleteRepositoryService } from './repository/delete-repository.service';
+import { TestingModule, Test } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { User } from "./entities/user.entity";
+import { UserService } from "./user.service";
+import { DomainService } from "./domain/domain.service";
+import { FindRepositoryService } from "./repository/find-repository.service";
+import { CreateRepositoryService } from "./repository/create-repository.service";
+import { UpdateRepositoryService } from "./repository/update-repository.service";
+import { DeleteRepositoryService } from "./repository/delete-repository.service";
+import { MailService } from "../mail/mail.service";
+import { MailerModule, MailerService } from "@nestjs-modules/mailer";
 
 const mockUserRepository = () => ({
   find: jest.fn(),
@@ -17,7 +19,7 @@ const mockUserRepository = () => ({
   update: jest.fn(),
   delete: jest.fn(),
 });
-describe('UserService', () => {
+describe("UserService", () => {
   let service: UserService;
 
   beforeEach(async () => {
@@ -29,6 +31,8 @@ describe('UserService', () => {
         UpdateRepositoryService,
         DeleteRepositoryService,
         UserService,
+        MailService,
+        MailerService,
         {
           provide: getRepositoryToken(User),
           useValue: mockUserRepository(),
@@ -39,7 +43,7 @@ describe('UserService', () => {
     service = module.get<UserService>(UserService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });
