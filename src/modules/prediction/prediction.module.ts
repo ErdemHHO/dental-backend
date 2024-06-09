@@ -7,6 +7,7 @@ import { UserModule } from '../user/user.module';
 import { DomainService } from './domain/domain.service';
 import { CreateRepositoryService } from './repository/create-repository.service';
 import { FindRepositoryService } from './repository/find-repository.service';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Prediction]), UserModule],
@@ -15,6 +16,7 @@ import { FindRepositoryService } from './repository/find-repository.service';
     DomainService,
     FindRepositoryService,
     CreateRepositoryService,
+    MailService,
   ],
   controllers: [PredictionController],
   exports: [

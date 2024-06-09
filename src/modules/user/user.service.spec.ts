@@ -7,6 +7,8 @@ import { FindRepositoryService } from './repository/find-repository.service';
 import { CreateRepositoryService } from './repository/create-repository.service';
 import { UpdateRepositoryService } from './repository/update-repository.service';
 import { DeleteRepositoryService } from './repository/delete-repository.service';
+import { MailService } from '../mail/mail.service';
+import { MailerService } from '@nestjs-modules/mailer';
 
 const mockUserRepository = () => ({
   find: jest.fn(),
@@ -29,6 +31,8 @@ describe('UserService', () => {
         UpdateRepositoryService,
         DeleteRepositoryService,
         UserService,
+        MailService,
+        MailerService,
         {
           provide: getRepositoryToken(User),
           useValue: mockUserRepository(),

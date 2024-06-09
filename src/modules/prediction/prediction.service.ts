@@ -7,6 +7,7 @@ import { Prediction } from './entities/prediction.entity';
 import { UserService } from '../user/user.service';
 import { CreatePredictionDto } from './dto/create-prediction.dto';
 import { DomainService } from './domain/domain.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class PredictionService {
@@ -16,6 +17,7 @@ export class PredictionService {
     private predictionRepository: Repository<Prediction>,
     private readonly userService: UserService,
     private readonly domainService: DomainService,
+    private readonly mailService: MailService,
   ) {}
 
   async predict(image: Buffer): Promise<any> {
@@ -43,9 +45,17 @@ export class PredictionService {
   }
 
   async getPredictionsByUserId(userId: string): Promise<Prediction[]> {
-    return this.predictionRepository.find({
+    return this.domainService.findRepositoryService.find({
       where: { user: { id: userId } },
       relations: ['user'],
+    });
+  }
+
+  async getLastPredictionsByUserId(userId: string): Promise<Prediction> {
+    return this.domainService.findRepositoryService.findOneOrNull({
+      where: { user: { id: userId } },
+      relations: ['user'],
+      order: { createdAt: 'DESC' },
     });
   }
 }

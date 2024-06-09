@@ -8,10 +8,14 @@ import { DomainService } from './domain/domain.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly domainService: DomainService) {}
+  constructor(
+    private readonly domainService: DomainService,
+    private readonly mailService: MailService,
+  ) {}
 
   async findAll(): Promise<User[]> {
     try {
@@ -44,7 +48,6 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
-      // Email ve telefon numarası kontrolü
       const existingUserByEmail =
         await this.domainService.findRepositoryService.findOneBy({
           email: createUserDto.email,
@@ -60,6 +63,11 @@ export class UserService {
       if (existingUserByPhone) {
         throw new ConflictException('Bu telefon numarası zaten kullanılıyor');
       }
+
+      // await this.mailService.sendWelcomeEmail(
+      //   createUserDto.email,
+      //   createUserDto.name
+      // );
 
       return this.domainService.createRepositoryService.create(createUserDto);
     } catch (error) {

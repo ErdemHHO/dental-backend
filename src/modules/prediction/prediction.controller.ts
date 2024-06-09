@@ -68,6 +68,7 @@ export class PredictionController {
       throw new BadRequestException('No file uploaded');
     }
     try {
+      console.log(file, req);
       const userId = req.user.id;
       const filePath = file.path;
       const imageBuffer = fs.readFileSync(filePath);
@@ -95,5 +96,16 @@ export class PredictionController {
     const predictions =
       await this.predictionService.getPredictionsByUserId(userId);
     return predictions;
+  }
+
+  @Get('/last/:userId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get last prediction by user ID' })
+  @ApiResponse({ status: 200, description: 'Return last prediction result.' })
+  async getLastPrediction(@Param('userId') userId: string): Promise<any> {
+    const prediction =
+      await this.predictionService.getLastPredictionsByUserId(userId);
+
+    return prediction;
   }
 }

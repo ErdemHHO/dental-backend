@@ -8,6 +8,7 @@ import { FindRepositoryService } from './repository/find-repository.service';
 import { UpdateRepositoryService } from './repository/update-repository.service';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
@@ -18,6 +19,7 @@ import { UserService } from './user.service';
     CreateRepositoryService,
     UpdateRepositoryService,
     DeleteRepositoryService,
+    MailService,
   ],
   controllers: [UserController],
   exports: [
