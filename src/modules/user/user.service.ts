@@ -3,71 +3,74 @@ import {
   NotFoundException,
   ConflictException,
   InternalServerErrorException,
-} from '@nestjs/common';
-import { DomainService } from './domain/domain.service';
-import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { MailService } from '../mail/mail.service';
+} from "@nestjs/common";
+import { DomainService } from "./domain/domain.service";
+import { User } from "./entities/user.entity";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { MailService } from "../mail/mail.service";
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly domainService: DomainService,
-    private readonly mailService: MailService,
+    private readonly mailService: MailService
   ) {}
 
   async findAll(): Promise<User[]> {
     try {
       const users = await this.domainService.findRepositoryService.findAll();
       if (!users.length) {
-        throw new NotFoundException('Hiçbir kullanıcı bulunamadı');
+        throw new NotFoundException("Hiçbir kullanıcı bulunamadı");
       }
       return users;
     } catch (error) {
       throw new InternalServerErrorException(
-        'Kullanıcıları getirirken bir hata oluştu',
+        "Kullanıcıları getirirken bir hata oluştu"
       );
     }
   }
 
   async findOne(id: string): Promise<User> {
     try {
-      const user =
-        await this.domainService.findRepositoryService.findOneById(id);
+      const user = await this.domainService.findRepositoryService.findOneById(
+        id
+      );
       if (!user) {
         throw new NotFoundException(`ID'si ${id} olan kullanıcı bulunamadı`);
       }
       return user;
     } catch (error) {
       throw new InternalServerErrorException(
-        `Kullanıcıyı getirirken bir hata oluştu: ${error.message}`,
+        `Kullanıcıyı getirirken bir hata oluştu: ${error.message}`
       );
     }
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
-      const existingUserByEmail =
-        await this.domainService.findRepositoryService.findOneBy({
+      const existingUserByEmail = await this.domainService.findRepositoryService.findOneBy(
+        {
           email: createUserDto.email,
-        });
+        }
+      );
       if (existingUserByEmail) {
-        throw new ConflictException('Bu e-posta zaten kullanılıyor');
+        throw new ConflictException("Bu e-posta zaten kullanılıyor");
       }
 
-      const existingUserByPhone =
-        await this.domainService.findRepositoryService.findOneBy({
+      const existingUserByPhone = await this.domainService.findRepositoryService.findOneBy(
+        {
           phoneNumber: createUserDto.phoneNumber,
-        });
+        }
+      );
       if (existingUserByPhone) {
-        throw new ConflictException('Bu telefon numarası zaten kullanılıyor');
+        throw new ConflictException("Bu telefon numarası zaten kullanılıyor");
       }
 
-      // await this.mailService.sendWelcomeEmail(
-      //   createUserDto.email,
-      //   createUserDto.name
-      // );
+      await this.mailService.sendWelcomeEmail(
+        createUserDto.email,
+        createUserDto.name
+      );
 
       return this.domainService.createRepositoryService.create(createUserDto);
     } catch (error) {
@@ -75,7 +78,7 @@ export class UserService {
         throw error;
       } else {
         throw new InternalServerErrorException(
-          `Kullanıcı oluşturulurken bir hata oluştu: ${error.message}`,
+          `Kullanıcı oluşturulurken bir hata oluştu: ${error.message}`
         );
       }
     }
@@ -83,20 +86,22 @@ export class UserService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-      const user =
-        await this.domainService.findRepositoryService.findOneById(id);
+      const user = await this.domainService.findRepositoryService.findOneById(
+        id
+      );
 
       if (!user) {
         throw new NotFoundException(`ID'si ${id} olan kullanıcı bulunamadı`);
       }
 
       if (updateUserDto.email && updateUserDto.email !== user.email) {
-        const existingUserByEmail =
-          await this.domainService.findRepositoryService.findOneBy({
+        const existingUserByEmail = await this.domainService.findRepositoryService.findOneBy(
+          {
             email: updateUserDto.email,
-          });
+          }
+        );
         if (existingUserByEmail) {
-          throw new ConflictException('Bu e-posta zaten kullanılıyor');
+          throw new ConflictException("Bu e-posta zaten kullanılıyor");
         }
       }
 
@@ -104,18 +109,19 @@ export class UserService {
         updateUserDto.phoneNumber &&
         updateUserDto.phoneNumber !== user.phoneNumber
       ) {
-        const existingUserByPhone =
-          await this.domainService.findRepositoryService.findOneBy({
+        const existingUserByPhone = await this.domainService.findRepositoryService.findOneBy(
+          {
             phoneNumber: updateUserDto.phoneNumber,
-          });
+          }
+        );
         if (existingUserByPhone) {
-          throw new ConflictException('Bu telefon numarası zaten kullanılıyor');
+          throw new ConflictException("Bu telefon numarası zaten kullanılıyor");
         }
       }
 
       return this.domainService.updateRepositoryService.updateOne(
         id,
-        updateUserDto,
+        updateUserDto
       );
     } catch (error) {
       if (
@@ -125,7 +131,7 @@ export class UserService {
         throw error;
       } else {
         throw new InternalServerErrorException(
-          `Kullanıcı güncellenirken bir hata oluştu: ${error.message}`,
+          `Kullanıcı güncellenirken bir hata oluştu: ${error.message}`
         );
       }
     }
@@ -139,7 +145,7 @@ export class UserService {
         throw error;
       } else {
         throw new InternalServerErrorException(
-          `Kullanıcı silinirken bir hata oluştu: ${error.message}`,
+          `Kullanıcı silinirken bir hata oluştu: ${error.message}`
         );
       }
     }
@@ -152,13 +158,13 @@ export class UserService {
       });
       if (!user) {
         throw new NotFoundException(
-          `Email adresi ${email} olan kullanıcı bulunamadı`,
+          `Email adresi ${email} olan kullanıcı bulunamadı`
         );
       }
       return user;
     } catch (error) {
       throw new InternalServerErrorException(
-        `Kullanıcıyı getirirken bir hata oluştu: ${error.message}`,
+        `Kullanıcıyı getirirken bir hata oluştu: ${error.message}`
       );
     }
   }
